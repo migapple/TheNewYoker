@@ -1,0 +1,20 @@
+{
+  "appId": "com.michel.garlandat.newyorker",
+  "appName": "Comedie française",
+  "webDir": "App/public",
+  "bundledWebRuntime": false,
+  "backgroundColor": "#f5f0e8",
+  "ios": {
+    "backgroundColor": "#f5f0e8",
+    "contentInset": "automatic",
+    "scrollEnabled": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    },
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}
