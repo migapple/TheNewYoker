@@ -6,450 +6,275 @@
 <title>The New Yorker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --cream: #f5f0e8;
-    --ink: #1a1a1a;
-    --red: #c8102e;
-    --gold: #b8960c;
-    --mid: #888;
-    --border: #d0c8b8;
-    --card-bg: #faf7f2;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bot: env(safe-area-inset-bottom, 0px);
-  }
+:root {
+  --cream: #f5f0e8;
+  --ink: #1a1a1a;
+  --red: #c8102e;
+  --mid: #888;
+  --border: #d0c8b8;
+  --card-bg: #faf7f2;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; height: 100%; background: var(--ink); overflow: hidden; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+#app {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; flex-direction: column;
+  padding-top: var(--safe-top);
+  background: var(--cream);
+  font-family: 'EB Garamond', Georgia, serif;
+  color: var(--ink);
+}
 
-  html, body {
-    width: 100%; height: 100%;
-    background: var(--ink);
-    overflow: hidden;
-  }
+.header {
+  background: var(--cream);
+  border-bottom: 2.5px solid var(--ink);
+  padding: 8px 14px 7px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; position: relative;
+}
+.header::after {
+  content: ''; position: absolute; bottom: -5px; left: 0; right: 0;
+  height: 2px; background: var(--ink);
+}
+.header-center { flex: 1; text-align: center; }
+.masthead { font-family: 'Playfair Display', serif; font-size: 21px; font-weight: 900; letter-spacing: -0.5px; line-height: 1; }
+.header-sub { font-size: 9.5px; letter-spacing: 3px; text-transform: uppercase; color: var(--mid); margin-top: 1px; }
+.lang-btn {
+  background: var(--ink); color: var(--cream); border: none; border-radius: 5px;
+  padding: 5px 10px; cursor: pointer; display: flex; align-items: center; gap: 5px;
+  font-family: 'EB Garamond', serif; font-size: 13px; letter-spacing: 0.5px; flex-shrink: 0;
+}
+.lang-btn:active { opacity: 0.7; }
+.flag { font-size: 17px; }
+.header-spacer { width: 62px; flex-shrink: 0; }
 
-  #app {
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    display: flex; flex-direction: column;
-    padding-top: var(--safe-top);
-    background: var(--cream);
-    font-family: 'EB Garamond', Georgia, serif;
-    color: var(--ink);
-  }
+.content { flex: 1; overflow: hidden; position: relative; }
+.tab-panel { position: absolute; inset: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: none; padding-bottom: 8px; }
+.tab-panel.active { display: block; }
 
-  /* ── HEADER ── */
-  .header {
-    background: var(--cream);
-    border-bottom: 2px solid var(--ink);
-    padding: 8px 16px 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-shrink: 0;
-    position: relative;
-  }
-  .header::after {
-    content: '';
-    position: absolute; bottom: -5px; left: 0; right: 0;
-    height: 2px; background: var(--ink);
-  }
+.section-header { padding: 13px 15px 9px; border-bottom: 1px solid var(--border); }
+.section-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; font-style: italic; }
+.section-desc { font-size: 12.5px; color: var(--mid); margin-top: 3px; line-height: 1.4; }
 
-  .header-title {
-    flex: 1;
-    text-align: center;
-  }
-  .header-title .masthead {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: -0.5px;
-    line-height: 1;
-    color: var(--ink);
-  }
-  .header-title .subtitle {
-    font-family: 'EB Garamond', Georgia, serif;
-    font-size: 10px;
-    letter-spacing: 2.5px;
-    text-transform: uppercase;
-    color: var(--mid);
-    margin-top: 1px;
-  }
+.artist-group { margin-bottom: 0; }
+.artist-header {
+  padding: 10px 15px 8px; background: var(--ink); color: var(--cream);
+  display: flex; align-items: baseline; justify-content: space-between;
+  position: sticky; top: 0; z-index: 5;
+}
+.artist-name { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 700; font-style: italic; }
+.artist-count { font-size: 11px; color: #aaa; letter-spacing: 1px; }
 
-  .lang-btn {
-    background: var(--ink);
-    color: var(--cream);
-    border: none;
-    border-radius: 6px;
-    padding: 5px 10px;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex; align-items: center; gap: 4px;
-    font-family: 'EB Garamond', serif;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    flex-shrink: 0;
-  }
-  .lang-btn:active { opacity: 0.7; }
-  .flag-icon { font-size: 18px; }
+.covers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); }
 
-  /* ── CONTENT ── */
-  .content {
-    flex: 1;
-    overflow: hidden;
-    position: relative;
-  }
+.cover-card { background: var(--card-bg); cursor: pointer; overflow: hidden; aspect-ratio: 3/4; display: flex; flex-direction: column; }
+.cover-card:active { opacity: 0.8; }
+.cover-img-wrap { flex: 1; overflow: hidden; background: #e8e4dc; display: flex; align-items: center; justify-content: center; position: relative; }
+.cover-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.loader { position: absolute; width: 22px; height: 22px; border: 2px solid var(--border); border-top-color: var(--ink); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.cover-caption { padding: 6px 9px 7px; border-top: 1px solid var(--border); background: var(--cream); flex-shrink: 0; }
+.cover-date { font-family: 'Playfair Display', serif; font-size: 11.5px; font-weight: 700; }
 
-  .tab-panel {
-    position: absolute; inset: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    display: none;
-    padding-bottom: 10px;
-  }
-  .tab-panel.active { display: block; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(26,26,26,0.93); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; padding-top: calc(var(--safe-top) + 20px); padding-bottom: calc(var(--safe-bot) + 20px); }
+.modal-overlay.open { display: flex; }
+.modal-card { background: var(--cream); border-radius: 4px; max-width: 380px; width: 100%; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; position: relative; }
+.modal-img { width: 100%; display: block; background: #e8e4dc; }
+.modal-body { padding: 15px; border-top: 2px solid var(--ink); }
+.modal-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; }
+.modal-artist { font-size: 13px; color: var(--mid); font-style: italic; margin: 4px 0 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.modal-desc { font-size: 15px; line-height: 1.65; color: #2a2a2a; }
+.modal-close { position: absolute; top: 10px; right: 10px; background: var(--ink); color: var(--cream); border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 10; }
+.modal-close:active { opacity: 0.7; }
+.modal-link { display: inline-block; margin-top: 12px; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--red); text-decoration: none; border-bottom: 1px solid var(--red); padding-bottom: 1px; cursor: pointer; }
 
-  /* ── COVERS GRID ── */
-  .section-header {
-    padding: 14px 16px 10px;
-    border-bottom: 1px solid var(--border);
-  }
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    font-weight: 700;
-    font-style: italic;
-  }
-  .section-desc {
-    font-size: 13px;
-    color: var(--mid);
-    margin-top: 3px;
-    line-height: 1.4;
-  }
+.history-content { padding: 16px; }
+.era-block { margin-bottom: 28px; }
+.era-year { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 900; color: var(--red); line-height: 1; }
+.era-title { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; font-style: italic; margin: 3px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.era-text { font-size: 15px; line-height: 1.7; color: #2a2a2a; }
+.pull-quote { border-left: 3px solid var(--red); padding: 8px 12px; margin: 14px 0; font-family: 'Playfair Display', serif; font-size: 14.5px; font-style: italic; line-height: 1.5; background: rgba(200,16,46,0.05); white-space: pre-line; }
+.divider { text-align: center; color: var(--border); font-size: 16px; letter-spacing: 8px; padding: 8px 0; }
 
-  .covers-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--border);
-    margin-top: 0;
-  }
+.about-content { padding: 16px; }
+.about-hero { background: var(--ink); color: var(--cream); padding: 22px 16px; margin: -16px -16px 20px; text-align: center; }
+.about-hero-title { font-family: 'Playfair Display', serif; font-size: 34px; font-weight: 900; font-style: italic; letter-spacing: -1px; }
+.about-hero-sub { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #999; margin-top: 4px; }
+.info-row { display: flex; border-bottom: 1px solid var(--border); padding: 11px 0; align-items: baseline; }
+.info-label { font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--mid); width: 110px; flex-shrink: 0; }
+.info-value { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 600; flex: 1; }
+.about-section-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; margin: 20px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--ink); }
+.about-text { font-size: 15px; line-height: 1.7; color: #2a2a2a; margin-bottom: 10px; }
+.contributors-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px; }
+.contributor-chip { background: var(--ink); color: var(--cream); padding: 6px 10px; border-radius: 3px; font-family: 'Playfair Display', serif; font-size: 12px; font-style: italic; text-align: center; }
 
-  .cover-card {
-    background: var(--card-bg);
-    cursor: pointer;
-    overflow: hidden;
-    position: relative;
-    aspect-ratio: 3/4;
-    display: flex; flex-direction: column;
-  }
-  .cover-card:active { opacity: 0.85; }
+.tabbar { background: var(--cream); border-top: 2px solid var(--ink); display: flex; padding-bottom: var(--safe-bot); flex-shrink: 0; }
+.tab-btn { flex: 1; border: none; background: none; padding: 9px 4px 7px; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; color: var(--mid); font-family: 'EB Garamond', serif; transition: color 0.2s; }
+.tab-btn:active { opacity: 0.7; }
+.tab-btn.active { color: var(--ink); }
+.tab-icon { font-size: 19px; line-height: 1; }
+.tab-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+.tab-btn.active .tab-label { font-weight: 600; border-bottom: 1.5px solid var(--ink); }
 
-  .cover-img-wrap {
-    flex: 1;
-    overflow: hidden;
-    background: #e8e4dc;
-    display: flex; align-items: center; justify-content: center;
-    position: relative;
-  }
-  .cover-img-wrap img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: opacity 0.3s;
-  }
-  .cover-img-wrap .loader {
-    position: absolute;
-    width: 24px; height: 24px;
-    border: 2px solid var(--border);
-    border-top-color: var(--ink);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+.loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; color: var(--mid); }
+.spin-big { width: 34px; height: 34px; border: 2px solid var(--border); border-top-color: var(--ink); border-radius: 50%; animation: spin 0.9s linear infinite; margin-bottom: 14px; }
+.loading-text { font-style: italic; font-size: 14px; }
+.loading-step { font-size: 12px; color: #bbb; margin-top: 6px; }
+.error-state { padding: 30px 20px; text-align: center; color: var(--mid); }
+.retry-btn { margin-top: 12px; background: var(--ink); color: var(--cream); border: none; padding: 8px 20px; border-radius: 3px; font-family: 'EB Garamond', serif; font-size: 14px; cursor: pointer; }
 
-  .cover-info {
-    padding: 7px 9px 8px;
-    border-top: 1px solid var(--border);
-    background: var(--cream);
-  }
-  .cover-date {
-    font-family: 'Playfair Display', serif;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--ink);
-  }
-  .cover-artist {
-    font-size: 11px;
-    color: var(--mid);
-    margin-top: 1px;
-    font-style: italic;
-  }
+/* ── QUIZ ── */
+.quiz-wrap { padding: 0; display: flex; flex-direction: column; height: 100%; }
 
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(26,26,26,0.92);
-    z-index: 100;
-    display: none;
-    align-items: center; justify-content: center;
-    padding: 20px;
-    padding-top: calc(var(--safe-top) + 20px);
-    padding-bottom: calc(var(--safe-bot) + 20px);
-  }
-  .modal-overlay.open { display: flex; }
+.quiz-progress-bar {
+  height: 3px; background: var(--border); flex-shrink: 0;
+  position: relative;
+}
+.quiz-progress-fill {
+  height: 100%; background: var(--red);
+  transition: width 0.4s ease;
+}
 
-  .modal-card {
-    background: var(--cream);
-    border-radius: 4px;
-    max-width: 380px; width: 100%;
-    max-height: 85vh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    position: relative;
-  }
-  .modal-img-wrap {
-    width: 100%;
-    background: #e8e4dc;
-    display: flex; align-items: center; justify-content: center;
-    min-height: 200px;
-  }
-  .modal-img-wrap img {
-    width: 100%; display: block;
-  }
-  .modal-body {
-    padding: 16px;
-    border-top: 2px solid var(--ink);
-  }
-  .modal-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px; font-weight: 700;
-    margin-bottom: 4px;
-  }
-  .modal-meta {
-    font-size: 13px; color: var(--mid);
-    font-style: italic;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border);
-  }
-  .modal-desc {
-    font-size: 15px; line-height: 1.6;
-    color: #333;
-  }
-  .modal-close {
-    position: absolute; top: 10px; right: 10px;
-    background: var(--ink); color: var(--cream);
-    border: none; border-radius: 50%;
-    width: 32px; height: 32px;
-    font-size: 18px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    line-height: 1;
-    z-index: 10;
-  }
-  .modal-close:active { opacity: 0.7; }
+.quiz-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 16px 6px; flex-shrink: 0;
+}
+.quiz-counter { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--mid); }
+.quiz-score-badge {
+  background: var(--ink); color: var(--cream);
+  font-family: 'Playfair Display', serif; font-size: 13px;
+  padding: 3px 10px; border-radius: 12px;
+}
 
-  /* ── HISTORY ── */
-  .history-content {
-    padding: 16px;
-  }
-  .era-block {
-    margin-bottom: 28px;
-  }
-  .era-year {
-    font-family: 'Playfair Display', serif;
-    font-size: 28px; font-weight: 900;
-    color: var(--red);
-    line-height: 1;
-  }
-  .era-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 16px; font-weight: 700;
-    font-style: italic;
-    margin-bottom: 8px;
-    margin-top: 2px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--border);
-  }
-  .era-text {
-    font-size: 15px; line-height: 1.7;
-    color: #2a2a2a;
-  }
-  .era-text + .era-text { margin-top: 8px; }
+.quiz-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 16px 16px; }
 
-  .pull-quote {
-    border-left: 3px solid var(--red);
-    padding: 8px 12px;
-    margin: 16px 0;
-    font-family: 'Playfair Display', serif;
-    font-size: 15px;
-    font-style: italic;
-    line-height: 1.5;
-    background: rgba(200,16,46,0.05);
-  }
+.quiz-question {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 700; line-height: 1.4;
+  margin: 8px 0 18px;
+  color: var(--ink);
+}
 
-  /* ── ABOUT ── */
-  .about-content {
-    padding: 16px;
-  }
-  .about-hero {
-    background: var(--ink);
-    color: var(--cream);
-    padding: 20px 16px;
-    margin: -16px -16px 20px;
-    text-align: center;
-  }
-  .about-hero-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 32px; font-weight: 900;
-    font-style: italic;
-    letter-spacing: -1px;
-  }
-  .about-hero-sub {
-    font-size: 12px; letter-spacing: 3px;
-    text-transform: uppercase;
-    color: #999;
-    margin-top: 4px;
-  }
-  .info-row {
-    display: flex;
-    border-bottom: 1px solid var(--border);
-    padding: 11px 0;
-    align-items: baseline;
-  }
-  .info-label {
-    font-size: 11px; letter-spacing: 1.5px;
-    text-transform: uppercase; color: var(--mid);
-    width: 110px; flex-shrink: 0;
-  }
-  .info-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 15px; font-weight: 600;
-    flex: 1;
-  }
-  .about-section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 17px; font-weight: 700;
-    margin: 20px 0 10px;
-    padding-bottom: 6px;
-    border-bottom: 2px solid var(--ink);
-  }
-  .about-text {
-    font-size: 15px; line-height: 1.7; color: #2a2a2a;
-    margin-bottom: 10px;
-  }
-  .contributors-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 8px; margin-top: 10px;
-  }
-  .contributor-chip {
-    background: var(--ink); color: var(--cream);
-    padding: 6px 10px; border-radius: 3px;
-    font-family: 'Playfair Display', serif;
-    font-size: 12px; font-style: italic;
-    text-align: center;
-  }
+.quiz-choices { display: flex; flex-direction: column; gap: 10px; }
 
-  /* ── TABBAR ── */
-  .tabbar {
-    background: var(--cream);
-    border-top: 2px solid var(--ink);
-    display: flex;
-    padding-bottom: var(--safe-bot);
-    flex-shrink: 0;
-  }
-  .tab-btn {
-    flex: 1; border: none; background: none;
-    padding: 10px 4px 8px;
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
-    cursor: pointer; color: var(--mid);
-    font-family: 'EB Garamond', serif;
-    font-size: 11px; letter-spacing: 0.5px;
-    transition: color 0.2s;
-  }
-  .tab-btn:active { opacity: 0.7; }
-  .tab-btn.active { color: var(--ink); }
-  .tab-btn .tab-icon { font-size: 20px; line-height: 1; }
-  .tab-btn .tab-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
-  .tab-btn.active .tab-label {
-    font-weight: 600;
-    border-bottom: 1.5px solid var(--ink);
-  }
+.choice-btn {
+  background: var(--card-bg); border: 1.5px solid var(--border);
+  border-radius: 4px; padding: 13px 14px;
+  text-align: left; cursor: pointer;
+  font-family: 'EB Garamond', serif; font-size: 15px;
+  color: var(--ink); line-height: 1.35;
+  display: flex; align-items: center; gap: 10px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.choice-btn:active { opacity: 0.85; }
+.choice-btn.correct {
+  background: #e8f5e9; border-color: #2e7d32; color: #1b5e20;
+}
+.choice-btn.wrong {
+  background: #fce8e8; border-color: var(--red); color: #7f0000;
+}
+.choice-btn.reveal-correct {
+  background: #e8f5e9; border-color: #2e7d32; color: #1b5e20;
+}
+.choice-letter {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--border); color: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+  font-family: 'Playfair Display', serif;
+}
+.choice-btn.correct .choice-letter { background: #2e7d32; color: #fff; }
+.choice-btn.wrong .choice-letter { background: var(--red); color: #fff; }
+.choice-btn.reveal-correct .choice-letter { background: #2e7d32; color: #fff; }
+.choice-btn:disabled { cursor: default; }
 
-  /* Loading state */
-  .loading-state {
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 60px 20px;
-    color: var(--mid);
-  }
-  .loading-state .spin-big {
-    width: 36px; height: 36px;
-    border: 2px solid var(--border);
-    border-top-color: var(--ink);
-    border-radius: 50%;
-    animation: spin 0.9s linear infinite;
-    margin-bottom: 14px;
-  }
-  .loading-text { font-style: italic; font-size: 14px; }
+.quiz-feedback {
+  margin-top: 14px; padding: 10px 13px; border-radius: 4px;
+  font-size: 14px; line-height: 1.5; display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: #e8f5e9; border-left: 3px solid #2e7d32; color: #1b5e20; }
+.quiz-feedback.ko { background: #fce8e8; border-left: 3px solid var(--red); color: #7f0000; }
 
-  .error-state {
-    padding: 30px 20px; text-align: center; color: var(--mid);
-  }
-  .retry-btn {
-    margin-top: 12px; background: var(--ink); color: var(--cream);
-    border: none; padding: 8px 20px; border-radius: 3px;
-    font-family: 'EB Garamond', serif; font-size: 14px; cursor: pointer;
-  }
+.quiz-next-btn {
+  margin-top: 16px; width: 100%;
+  background: var(--ink); color: var(--cream);
+  border: none; border-radius: 4px; padding: 13px;
+  font-family: 'Playfair Display', serif; font-size: 15px;
+  font-style: italic; cursor: pointer; display: none;
+}
+.quiz-next-btn.show { display: block; }
+.quiz-next-btn:active { opacity: 0.8; }
 
-  /* decorative divider */
-  .divider {
-    text-align: center; color: var(--border);
-    font-size: 18px; letter-spacing: 8px;
-    padding: 10px 0;
-  }
+/* Results screen */
+.quiz-results {
+  padding: 24px 20px;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+}
+.results-medal { font-size: 56px; margin-bottom: 10px; }
+.results-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; font-weight: 900; margin-bottom: 6px;
+}
+.results-score {
+  font-family: 'Playfair Display', serif;
+  font-size: 40px; font-weight: 900; color: var(--red);
+  line-height: 1; margin: 10px 0 4px;
+}
+.results-total { font-size: 14px; color: var(--mid); margin-bottom: 16px; }
+.results-msg {
+  font-size: 16px; line-height: 1.6; color: #333;
+  max-width: 280px; margin-bottom: 24px;
+  font-style: italic;
+}
+.replay-btn {
+  background: var(--ink); color: var(--cream);
+  border: none; border-radius: 4px; padding: 13px 32px;
+  font-family: 'Playfair Display', serif; font-size: 16px;
+  font-style: italic; cursor: pointer;
+}
+.replay-btn:active { opacity: 0.8; }
 </style>
 </head>
 <body>
 <div id="app">
-
-  <!-- HEADER -->
   <div class="header">
-    <button class="lang-btn" id="langToggle" onclick="toggleLang()">
-      <span class="flag-icon" id="flagIcon">🇬🇧</span>
+    <button class="lang-btn" onclick="toggleLang()">
+      <span class="flag" id="flagIcon">🇬🇧</span>
       <span id="langLabel">EN</span>
     </button>
-    <div class="header-title">
+    <div class="header-center">
       <div class="masthead">The New Yorker</div>
-      <div class="subtitle" id="headerSubtitle">Magazine · est. 1925</div>
+      <div class="header-sub">Magazine · est. 1925</div>
     </div>
-    <div style="width:62px"></div>
+    <div class="header-spacer"></div>
   </div>
 
-  <!-- CONTENT -->
   <div class="content">
-
-    <!-- TAB: COVERS -->
     <div class="tab-panel active" id="panel-covers">
       <div class="section-header">
         <div class="section-title" id="coversTitle">Iconic Covers</div>
-        <div class="section-desc" id="coversDesc">Public domain covers from Wikimedia Commons (1925–1927)</div>
+        <div class="section-desc" id="coversDesc">Public domain covers from Wikimedia Commons, grouped by artist</div>
       </div>
       <div id="coversContainer"></div>
     </div>
-
-    <!-- TAB: HISTORY -->
     <div class="tab-panel" id="panel-history">
       <div class="history-content" id="historyContent"></div>
     </div>
-
-    <!-- TAB: ABOUT -->
+    <div class="tab-panel" id="panel-quiz">
+      <div id="quizContainer"></div>
+    </div>
     <div class="tab-panel" id="panel-about">
       <div class="about-content" id="aboutContent"></div>
     </div>
-
   </div>
 
-  <!-- TABBAR -->
   <div class="tabbar">
     <button class="tab-btn active" id="tab-covers" onclick="switchTab('covers')">
       <span class="tab-icon">🖼</span>
@@ -459,437 +284,435 @@
       <span class="tab-icon">📜</span>
       <span class="tab-label" data-fr="Histoire" data-en="History">History</span>
     </button>
+    <button class="tab-btn" id="tab-quiz" onclick="switchTab('quiz')">
+      <span class="tab-icon">✏️</span>
+      <span class="tab-label" data-fr="Quiz" data-en="Quiz">Quiz</span>
+    </button>
     <button class="tab-btn" id="tab-about" onclick="switchTab('about')">
       <span class="tab-icon">ℹ️</span>
       <span class="tab-label" data-fr="À propos" data-en="About">About</span>
     </button>
   </div>
-
 </div>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+<div class="modal-overlay" id="modalOverlay" onclick="handleModalClick(event)">
   <div class="modal-card" id="modalCard">
     <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-img-wrap">
-      <img id="modalImg" src="" alt="">
-    </div>
+    <img class="modal-img" id="modalImg" src="" alt="">
     <div class="modal-body">
       <div class="modal-title" id="modalTitle"></div>
-      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-artist" id="modalArtist"></div>
       <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-link" id="modalLink" onclick="openWiki()"></div>
     </div>
   </div>
 </div>
 
 <script>
-// ── STATE ──
+const WIKI = 'https://commons.wikimedia.org/w/api.php';
 let lang = 'en';
-let covers = [];
+let allGroups = [];
+let flatCovers = [];
+let currentModalUrl = '';
 
-// ── CURATED COVERS (public domain, Wikimedia Commons) ──
-// These are early New Yorker covers (1925-1927) confirmed as public domain
-const CURATED_COVERS = [
-  {
-    file: 'New_Yorker_19250221.jpg',
-    date_fr: '21 février 1925',
-    date_en: 'February 21, 1925',
-    artist: 'Rea Irvin',
-    desc_fr: 'La toute première couverture du New Yorker. Elle présente Eustace Tilley, le dandy emblématique du magazine, en train d\'examiner un papillon avec son monocle. Ce personnage est dessiné par Rea Irvin et deviendra le symbole officieux du New Yorker.',
-    desc_en: 'The very first cover of The New Yorker. It features Eustace Tilley, the magazine\'s iconic dandy, examining a butterfly through his monocle. Drawn by Rea Irvin, this character became the unofficial mascot of the magazine.',
-    wiki: 'New_Yorker_19250221.jpg'
+const ARTIST_INFO = {
+  'Rea Irvin': {
+    fr: 'Illustrateur américain (1881–1972), Rea Irvin fut le premier directeur artistique du New Yorker. Il créa Eustace Tilley dès la première couverture du 21 février 1925.',
+    en: 'American illustrator (1881–1972), Rea Irvin was the first art director of The New Yorker. He created Eustace Tilley on the very first cover of February 21, 1925.'
   },
-  {
-    file: 'New_Yorker_19260220.jpg',
-    date_fr: '20 février 1926',
-    date_en: 'February 20, 1926',
-    artist: 'Rea Irvin',
-    desc_fr: 'Couverture du premier anniversaire du New Yorker. Rea Irvin reprend Eustace Tilley pour célébrer la première année du magazine, établissant ainsi une tradition annuelle.',
-    desc_en: 'First anniversary cover of The New Yorker. Rea Irvin reprises Eustace Tilley to celebrate the magazine\'s first year, establishing what would become an annual tradition.',
-    wiki: 'New_Yorker_19260220.jpg'
+  'Ilonka Karasz': {
+    fr: 'Illustratrice hongro-américaine (1896–1981), Ilonka Karasz a signé 186 couvertures pour le New Yorker entre 1925 et 1973 — un record absolu.',
+    en: 'Hungarian-American illustrator (1896–1981), Ilonka Karasz created 186 covers for The New Yorker between 1925 and 1973 — an absolute record.'
   },
-  {
-    file: 'New_Yorker_19270219.jpg',
-    date_fr: '19 février 1927',
-    date_en: 'February 19, 1927',
-    artist: 'Rea Irvin',
-    desc_fr: 'Troisième anniversaire. La couverture anniversaire annuelle avec Eustace Tilley devient une tradition fondatrice du magazine.',
-    desc_en: 'Third anniversary. The annual anniversary cover featuring Eustace Tilley becomes a founding tradition of the magazine.',
-    wiki: 'New_Yorker_19270219.jpg'
-  },
-  {
-    file: 'New_Yorker_19250228.jpg',
-    date_fr: '28 février 1925',
-    date_en: 'February 28, 1925',
-    artist: 'Various',
-    desc_fr: 'Deuxième numéro du New Yorker, publié une semaine après le lancement historique du 21 février 1925.',
-    desc_en: 'Second issue of The New Yorker, published one week after the historic launch of February 21, 1925.',
-    wiki: 'New_Yorker_19250228.jpg'
-  },
-  {
-    file: 'New_Yorker_19250307.jpg',
-    date_fr: '7 mars 1925',
-    date_en: 'March 7, 1925',
-    artist: 'Various',
-    desc_fr: 'Troisième numéro du New Yorker dans sa première année de publication.',
-    desc_en: 'Third issue of The New Yorker in its inaugural year of publication.',
-    wiki: 'New_Yorker_19250307.jpg'
-  },
-  {
-    file: 'New_Yorker_19260306.jpg',
-    date_fr: '6 mars 1926',
-    date_en: 'March 6, 1926',
-    artist: 'Various',
-    desc_fr: 'Couverture de la deuxième année du magazine, période durant laquelle le New Yorker s\'impose progressivement dans le paysage culturel américain.',
-    desc_en: 'Cover from the magazine\'s second year, a period during which The New Yorker gradually established itself in the American cultural landscape.',
-    wiki: 'New_Yorker_19260306.jpg'
-  },
-];
-
-// Wikimedia Commons thumbnail URL builder
-function wikiThumb(filename, size) {
-  // Encode filename
-  const name = filename.replace(/ /g, '_');
-  const md5 = md5Hash(name);
-  const a = md5[0];
-  const ab = md5[0] + md5[1];
-  return `https://upload.wikimedia.org/wikipedia/commons/thumb/${a}/${ab}/${encodeURIComponent(name)}/${size}px-${encodeURIComponent(name)}`;
-}
-
-// Simple MD5 for Wikimedia path (we use the API instead)
-// We'll use the Wikimedia API to get proper thumb URLs
-async function fetchWikimediaThumb(filename, size) {
-  const url = `https://commons.wikimedia.org/w/api.php?action=query&titles=File:${encodeURIComponent(filename)}&prop=imageinfo&iiprop=url|thumburl|size&iiurlwidth=${size}&format=json&origin=*`;
-  const resp = await fetch(url);
-  const data = await resp.json();
-  const pages = data.query.pages;
-  const page = Object.values(pages)[0];
-  if (page.imageinfo && page.imageinfo[0]) {
-    return page.imageinfo[0].thumburl || page.imageinfo[0].url;
+  'Stanley W. Reynolds': {
+    fr: 'Illustrateur américain actif dans les années 1920, Stanley W. Reynolds a contribué de nombreuses couvertures dans les premières années du New Yorker.',
+    en: 'American illustrator active in the 1920s, Stanley W. Reynolds contributed many covers in the early years of The New Yorker.'
   }
-  return null;
+};
+
+function artistDesc(a) {
+  return ARTIST_INFO[a] ? ARTIST_INFO[a][lang] : (lang==='fr' ? 'Artiste ayant contribué des couvertures au New Yorker.' : 'Artist who contributed covers to The New Yorker.');
 }
 
-// ── LOAD COVERS ──
+async function api(params) {
+  const u = WIKI + '?' + new URLSearchParams({...params, format:'json', origin:'*'});
+  return (await fetch(u)).json();
+}
+
+async function getSubcats(cat) {
+  const d = await api({action:'query', list:'categorymembers', cmtitle:'Category:'+cat, cmtype:'subcat', cmlimit:'50'});
+  return (d.query?.categorymembers||[]).map(m => m.title.replace('Category:',''));
+}
+
+async function getFiles(cat) {
+  let files=[], cont;
+  do {
+    const p = {action:'query', list:'categorymembers', cmtitle:'Category:'+cat, cmtype:'file', cmlimit:'50'};
+    if (cont) p.cmcontinue = cont;
+    const d = await api(p);
+    files.push(...(d.query?.categorymembers||[]).map(m => m.title.replace('File:','')));
+    cont = d.continue?.cmcontinue;
+  } while (cont);
+  return files;
+}
+
+async function getThumbs(files) {
+  const map = {};
+  for (let i=0; i<files.length; i+=40) {
+    const batch = files.slice(i, i+40);
+    const titles = batch.map(f=>'File:'+f).join('|');
+    const d = await api({action:'query', titles, prop:'imageinfo', iiprop:'url|thumburl|size', iiurlwidth:'500'});
+    for (const pg of Object.values(d.query?.pages||{})) {
+      if (pg.imageinfo?.[0]) {
+        const f = pg.title.replace('File:','');
+        map[f] = { thumb: pg.imageinfo[0].thumburl || pg.imageinfo[0].url, desc: 'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(f) };
+      }
+    }
+  }
+  return map;
+}
+
+function parseDate(f) {
+  const m1 = f.match(/(\d{1,2})([A-Za-z]{3})(\d{4})/);
+  if (m1) return `${m1[1]} ${m1[2]} ${m1[3]}`;
+  const m2 = f.match(/(\d{4})(\d{2})(\d{2})/);
+  if (m2) { const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${m2[3]} ${mo[+m2[2]-1]} ${m2[1]}`; }
+  const m3 = f.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (m3) { const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return `${m3[3]} ${mo[+m3[2]-1]} ${m3[1]}`; }
+  return f.replace(/\.(jpg|jpeg|png|webp|gif)$/i,'').replace(/_/g,' ');
+}
+
+function toFr(d) {
+  const m = {Jan:'janv.',Feb:'févr.',Mar:'mars',Apr:'avr.',May:'mai',Jun:'juin',Jul:'juil.',Aug:'août',Sep:'sept.',Oct:'oct.',Nov:'nov.',Dec:'déc.'};
+  return d.replace(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/, x => m[x]||x);
+}
+
+function artistFromCat(c) {
+  return c.replace(/'s?\s+New Yorker covers?/i,'').replace(/\s+New Yorker.*/i,'').trim();
+}
+
 async function loadCovers() {
-  const container = document.getElementById('coversContainer');
-  container.innerHTML = `<div class="loading-state"><div class="spin-big"></div><div class="loading-text">${lang === 'fr' ? 'Chargement des couvertures…' : 'Loading covers…'}</div></div>`;
-
-  // Try to fetch thumb URLs from Wikimedia API
-  const results = [];
-  for (const cover of CURATED_COVERS) {
-    try {
-      const thumb = await fetchWikimediaThumb(cover.file, 400);
-      if (thumb) {
-        results.push({ ...cover, thumbUrl: thumb });
-      }
-    } catch(e) {
-      // If API fails, skip this cover
-    }
-  }
-
-  // Also try to search Wikimedia Commons category for more covers
+  const box = document.getElementById('coversContainer');
+  setLoading(box, lang==='fr'?'Chargement…':'Loading…', lang==='fr'?'Interrogation de Wikimedia Commons':'Querying Wikimedia Commons');
   try {
-    const catUrl = `https://commons.wikimedia.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:The_New_Yorker_covers&cmtype=file&cmlimit=30&format=json&origin=*`;
-    const catResp = await fetch(catUrl);
-    const catData = await catResp.json();
-    if (catData.query && catData.query.categorymembers) {
-      const members = catData.query.categorymembers;
-      // Get thumb URLs for category members not already in our curated list
-      const curatedFiles = CURATED_COVERS.map(c => c.file);
-      for (const member of members.slice(0, 12)) {
-        const fname = member.title.replace('File:', '');
-        if (!curatedFiles.includes(fname) && !results.find(r => r.file === fname)) {
-          try {
-            const thumb = await fetchWikimediaThumb(fname, 400);
-            if (thumb) {
-              // Parse year from filename if possible
-              const yearMatch = fname.match(/(\d{4})/);
-              const year = yearMatch ? yearMatch[1] : '';
-              results.push({
-                file: fname,
-                date_fr: year ? `Couverture ${year}` : 'The New Yorker',
-                date_en: year ? `Cover ${year}` : 'The New Yorker',
-                artist: '',
-                desc_fr: 'Couverture libre de droits disponible sur Wikimedia Commons.',
-                desc_en: 'Public domain cover available on Wikimedia Commons.',
-                thumbUrl: thumb
-              });
-            }
-          } catch(e) {}
-        }
-      }
-    }
-  } catch(e) {}
+    const subcats = await getSubcats('The_New_Yorker_covers');
+    const mainFiles = await getFiles('The_New_Yorker_covers');
+    const artistCats = subcats.filter(s => /New Yorker covers?/i.test(s));
 
-  covers = results;
-  renderCovers();
+    const groups = [];
+    for (const cat of artistCats) {
+      const artist = artistFromCat(cat);
+      const files = await getFiles(cat.replace(/ /g,'_'));
+      if (files.length) groups.push({artist, files});
+    }
+
+    const grouped = new Set(groups.flatMap(g=>g.files));
+    const other = mainFiles.filter(f => !grouped.has(f));
+    if (other.length) groups.push({artist: lang==='fr'?'Artistes divers':'Various Artists', files: other});
+
+    if (!groups.length) { showErr(box); return; }
+
+    const total = groups.reduce((n,g)=>n+g.files.length,0);
+    setLoading(box, lang==='fr'?'Chargement des images…':'Loading images…', `${total} ${lang==='fr'?'couvertures trouvées':'covers found'}`);
+
+    const thumbMap = await getThumbs(groups.flatMap(g=>g.files));
+
+    allGroups = groups.map(g => ({
+      artist: g.artist,
+      covers: g.files.filter(f=>thumbMap[f]).map(f=>({
+        file:f, en:parseDate(f), fr:toFr(parseDate(f)),
+        thumb:thumbMap[f].thumb, url:thumbMap[f].desc
+      }))
+    })).filter(g=>g.covers.length);
+
+    flatCovers = allGroups.flatMap(g => g.covers.map(c=>({...c, artist:g.artist})));
+    renderCovers();
+  } catch(e) { console.error(e); showErr(box); }
+}
+
+function setLoading(el, msg, sub) {
+  el.innerHTML = `<div class="loading-state"><div class="spin-big"></div><div class="loading-text">${msg}</div>${sub?`<div class="loading-step">${sub}</div>`:''}</div>`;
+}
+function showErr(el) {
+  el.innerHTML = `<div class="error-state"><p>${lang==='fr'?'Impossible de charger les couvertures.':'Unable to load covers.'}</p><button class="retry-btn" onclick="loadCovers()">${lang==='fr'?'Réessayer':'Retry'}</button></div>`;
 }
 
 function renderCovers() {
-  const container = document.getElementById('coversContainer');
-  if (covers.length === 0) {
-    container.innerHTML = `<div class="error-state">
-      <p>${lang === 'fr' ? 'Impossible de charger les couvertures.' : 'Unable to load covers.'}</p>
-      <button class="retry-btn" onclick="loadCovers()">${lang === 'fr' ? 'Réessayer' : 'Retry'}</button>
-    </div>`;
-    return;
-  }
-
-  const grid = document.createElement('div');
-  grid.className = 'covers-grid';
-
-  covers.forEach((cover, i) => {
-    const card = document.createElement('div');
-    card.className = 'cover-card';
-    card.onclick = () => openModal(i);
-
-    const dateLabel = lang === 'fr' ? cover.date_fr : cover.date_en;
-    const artistLabel = cover.artist || '';
-
-    card.innerHTML = `
-      <div class="cover-img-wrap">
-        <div class="loader" id="loader-${i}"></div>
-        <img src="${cover.thumbUrl}" alt="${dateLabel}" loading="lazy"
-          onload="document.getElementById('loader-${i}').style.display='none'"
-          onerror="document.getElementById('loader-${i}').style.display='none'; this.style.display='none'">
-      </div>
-      <div class="cover-info">
-        <div class="cover-date">${dateLabel}</div>
-        ${artistLabel ? `<div class="cover-artist">${artistLabel}</div>` : ''}
-      </div>`;
-    grid.appendChild(card);
-  });
-
-  container.innerHTML = '';
-  container.appendChild(grid);
-}
-
-// ── MODAL ──
-function openModal(i) {
-  const cover = covers[i];
-  const overlay = document.getElementById('modalOverlay');
-  document.getElementById('modalImg').src = cover.thumbUrl;
-  document.getElementById('modalTitle').textContent = lang === 'fr' ? cover.date_fr : cover.date_en;
-  document.getElementById('modalMeta').textContent = cover.artist || 'The New Yorker';
-  document.getElementById('modalDesc').textContent = lang === 'fr' ? cover.desc_fr : cover.desc_en;
-  overlay.classList.add('open');
-}
-
-function closeModal(e) {
-  if (!e || e.target === document.getElementById('modalOverlay') || e.target.className === 'modal-close') {
-    document.getElementById('modalOverlay').classList.remove('open');
+  const box = document.getElementById('coversContainer');
+  if (!allGroups.length) { showErr(box); return; }
+  box.innerHTML = '';
+  for (const g of allGroups) {
+    const n = g.covers.length;
+    const cnt = lang==='fr'?`${n} couverture${n>1?'s':''}`:`${n} cover${n>1?'s':''}`;
+    const el = document.createElement('div');
+    el.className = 'artist-group';
+    el.innerHTML = `<div class="artist-header"><div class="artist-name">${g.artist}</div><div class="artist-count">${cnt}</div></div>`;
+    const grid = document.createElement('div');
+    grid.className = 'covers-grid';
+    g.covers.forEach(c => {
+      const idx = flatCovers.findIndex(x=>x.file===c.file);
+      const date = lang==='fr'?c.fr:c.en;
+      const card = document.createElement('div');
+      card.className = 'cover-card';
+      card.onclick = ()=>openModal(idx);
+      card.innerHTML = `<div class="cover-img-wrap"><div class="loader" id="l${idx}"></div><img src="${c.thumb}" alt="${date}" loading="lazy" onload="document.getElementById('l${idx}').style.display='none'" onerror="document.getElementById('l${idx}').style.display='none';this.style.display='none'"></div><div class="cover-caption"><div class="cover-date">${date}</div></div>`;
+      grid.appendChild(card);
+    });
+    el.appendChild(grid);
+    box.appendChild(el);
   }
 }
 
-// ── HISTORY ──
-const HISTORY = {
-  fr: [
-    {
-      year: '1925',
-      title: 'La naissance d\'un magazine légendaire',
-      text: 'Harold Ross et sa femme Jane Grant fondent The New Yorker le 21 février 1925. Le premier numéro, vendu 15 cents, affiche en couverture Eustace Tilley, le dandy aristocratique dessiné par Rea Irvin, qui deviendra le symbole éternel du magazine. Ross rêve d\'un magazine sophistiqué, destiné à une élite new-yorkaise, à rebours de la presse populaire de l\'époque.',
-      quote: '« Ce magazine ne sera pas édité pour la vieille dame d\'Dubuque. »\n— Harold Ross, 1925'
-    },
-    {
-      year: '1930s',
-      title: 'L\'âge d\'or de la prose américaine',
-      text: 'Les années 1930 voient le magazine s\'imposer comme la principale tribune de la littérature américaine. E.B. White, James Thurber et Dorothy Parker y publient régulièrement. Le style maison — précis, élégant, jamais condescendant — est forgé par ces années fondatrices. Les cartoons deviennent une signature culturelle inimitable.',
-      quote: ''
-    },
-    {
-      year: '1940s',
-      title: 'La guerre vue de New York',
-      text: 'Pendant la Seconde Guerre mondiale, le New Yorker envoie des correspondants sur tous les fronts. Les reportages de A.J. Liebling depuis Paris occupé, puis libéré, comptent parmi les plus beaux textes de guerre de la langue anglaise. En 1945, John Hersey consacre un numéro entier à Hiroshima — un acte éditorial sans précédent.',
-      quote: '« Hiroshima » de John Hersey occupe à lui seul tout le numéro du 31 août 1946 — une révolution éditoriale.'
-    },
-    {
-      year: '1950–60s',
-      title: 'L\'ère Shawn et le Nouveau Journalisme',
-      text: 'William Shawn succède à Ross en 1951 et dirige le magazine pendant 35 ans. Sous sa direction, le New Yorker publie les profils de J.D. Salinger, les essais de James Baldwin, et les enquêtes pionnières de Rachel Carson sur les pesticides (Silent Spring) et de Hannah Arendt sur le procès Eichmann.',
-      quote: ''
-    },
-    {
-      year: '1990s–2000s',
-      title: 'Renouveau et controverses',
-      text: 'Tina Brown arrive en 1992, apportant couleurs, célébrités et photographies. David Remnick prend la direction en 1998 et restaure la profondeur éditoriale tout en modernisant le magazine. Les années post-11 septembre donnent naissance à un journalisme d\'investigation qui vaudra au New Yorker de nombreux prix Pulitzer.',
-      quote: ''
-    },
-    {
-      year: '2025',
-      title: 'Un siècle de plumes et de dessins',
-      text: 'En 2025, The New Yorker fête son centenaire. Toujours hebdomadaire, il demeure la référence mondiale du long-form journalism, avec plus de 1,2 million d\'abonnés. Ses couvertures, signées des meilleurs illustrateurs contemporains, continuent de commenter l\'actualité avec humour, élégance et parfois une violence poétique.',
-      quote: ''
-    }
+function openModal(idx) {
+  const c = flatCovers[idx];
+  if (!c) return;
+  document.getElementById('modalImg').src = c.thumb;
+  document.getElementById('modalTitle').textContent = lang==='fr'?c.fr:c.en;
+  document.getElementById('modalArtist').textContent = c.artist;
+  document.getElementById('modalDesc').textContent = artistDesc(c.artist);
+  currentModalUrl = c.url;
+  const lnk = document.getElementById('modalLink');
+  lnk.textContent = lang==='fr'?'→ Voir sur Wikimedia Commons':'→ View on Wikimedia Commons';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function openWiki() { if (currentModalUrl) window.open(currentModalUrl, '_blank'); }
+function handleModalClick(e) { if (e.target===document.getElementById('modalOverlay')) closeModal(); }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+const HIST = {
+  fr:[
+    {year:'1925',title:'La naissance d\'un magazine légendaire',text:'Harold Ross et Jane Grant fondent The New Yorker le 21 février 1925. La première couverture — Eustace Tilley, dandy à monocle dessiné par Rea Irvin — deviendra une icône mondiale. Ross rêve d\'un magazine sophistiqué, loin de la presse populaire.',quote:'« Ce magazine ne sera pas édité pour la vieille dame de Dubuque. »\n— Harold Ross, 1925'},
+    {year:'1930s',title:'L\'âge d\'or de la prose',text:'E.B. White, James Thurber, Dorothy Parker élisent domicile au New Yorker. Le style maison — précis, jamais condescendant — est forgé dans ces années. Les cartoons deviennent une signature inimitable.',quote:''},
+    {year:'1946',title:'Hiroshima',text:'En août 1946, John Hersey consacre un numéro entier à Hiroshima. Cet acte éditorial sans précédent redéfinit le journalisme américain et fait du New Yorker la conscience de l\'Amérique.',quote:'Le 31 août 1946, pour la première fois, le New Yorker publie un seul article sur toutes ses pages.'},
+    {year:'1951–87',title:'L\'ère William Shawn',text:'Shawn dirige le magazine 35 ans. Baldwin, Rachel Carson (Silent Spring), Hannah Arendt, Truman Capote (De sang-froid) y publient des textes fondateurs.',quote:''},
+    {year:'1998→',title:'L\'ère Remnick',text:'David Remnick modernise le magazine tout en restaurant sa profondeur éditoriale. Plusieurs Pulitzer récompenseront ses années de direction.',quote:''},
+    {year:'2025',title:'Le centenaire',text:'The New Yorker fête ses 100 ans. Toujours hebdomadaire, avec plus d\'un million d\'abonnés. Ses couvertures continuent de surprendre et d\'émouvoir — une tradition centenaire.',quote:''}
   ],
-  en: [
-    {
-      year: '1925',
-      title: 'The Birth of a Legend',
-      text: 'Harold Ross and his wife Jane Grant founded The New Yorker on February 21, 1925. The first issue, sold for 15 cents, featured Eustace Tilley on the cover — the aristocratic dandy drawn by Rea Irvin who would become the magazine\'s eternal symbol. Ross dreamed of a sophisticated magazine for a New York elite, in contrast to the popular press of the era.',
-      quote: '"This magazine will not be edited for the old lady in Dubuque."\n— Harold Ross, 1925'
-    },
-    {
-      year: '1930s',
-      title: 'The Golden Age of American Prose',
-      text: 'The 1930s saw the magazine establish itself as the premier venue for American literature. E.B. White, James Thurber, and Dorothy Parker published there regularly. The house style — precise, elegant, never condescending — was forged in these founding years. The cartoons became an unmistakable cultural signature.',
-      quote: ''
-    },
-    {
-      year: '1940s',
-      title: 'The War Seen from New York',
-      text: 'During World War II, The New Yorker sent correspondents to every front. A.J. Liebling\'s dispatches from occupied, then liberated Paris rank among the finest war writing in the English language. In 1945, John Hersey devoted an entire issue to Hiroshima — an unprecedented editorial act.',
-      quote: 'John Hersey\'s "Hiroshima" occupied an entire issue on August 31, 1946 — an editorial revolution.'
-    },
-    {
-      year: '1950–60s',
-      title: 'The Shawn Era and New Journalism',
-      text: 'William Shawn succeeded Ross in 1951 and led the magazine for 35 years. Under his guidance, The New Yorker published profiles of J.D. Salinger, essays by James Baldwin, and groundbreaking investigations by Rachel Carson on pesticides (Silent Spring) and Hannah Arendt on the Eichmann trial.',
-      quote: ''
-    },
-    {
-      year: '1990s–2000s',
-      title: 'Renewal and Controversies',
-      text: 'Tina Brown arrived in 1992, bringing color, celebrities, and photography. David Remnick took over in 1998, restoring editorial depth while modernizing the magazine. The post-9/11 years gave birth to investigative journalism that earned The New Yorker numerous Pulitzer Prizes.',
-      quote: ''
-    },
-    {
-      year: '2025',
-      title: 'A Century of Writing and Drawing',
-      text: 'In 2025, The New Yorker celebrates its centennial. Still weekly, it remains the global standard for long-form journalism, with over 1.2 million subscribers. Its covers, signed by the finest contemporary illustrators, continue to comment on current events with humor, elegance, and sometimes poetic force.',
-      quote: ''
-    }
+  en:[
+    {year:'1925',title:'The Birth of a Legend',text:'Harold Ross and Jane Grant founded The New Yorker on February 21, 1925. The first cover — Eustace Tilley, a monocled dandy drawn by Rea Irvin — became a worldwide icon. Ross dreamed of a sophisticated magazine far from the popular press.',quote:'"This magazine will not be edited for the old lady in Dubuque."\n— Harold Ross, 1925'},
+    {year:'1930s',title:'The Golden Age of Prose',text:'E.B. White, James Thurber, Dorothy Parker made The New Yorker their home. The house style — precise, never condescending — was forged in these years. The cartoons became an unmistakable cultural signature.',quote:''},
+    {year:'1946',title:'Hiroshima',text:'In August 1946, John Hersey devoted an entire issue to Hiroshima. This unprecedented editorial act redefined American journalism and made The New Yorker the conscience of America.',quote:'On August 31, 1946, The New Yorker published a single article across all its pages for the first time.'},
+    {year:'1951–87',title:'The Shawn Era',text:'Shawn led the magazine for 35 years. Baldwin, Rachel Carson (Silent Spring), Hannah Arendt, Truman Capote (In Cold Blood) published landmark texts there.',quote:''},
+    {year:'1998→',title:'The Remnick Era',text:'David Remnick modernized the magazine while restoring its editorial depth. Multiple Pulitzer Prizes marked his tenure.',quote:''},
+    {year:'2025',title:'The Centennial',text:'The New Yorker celebrates its 100th anniversary. Still weekly, with over a million subscribers. Its covers continue to surprise and move readers — a century-old tradition.',quote:''}
   ]
 };
 
 function renderHistory() {
-  const content = document.getElementById('historyContent');
-  const data = HISTORY[lang];
-  content.innerHTML = data.map(era => `
+  document.getElementById('historyContent').innerHTML = HIST[lang].map(e=>`
     <div class="era-block">
-      <div class="era-year">${era.year}</div>
-      <div class="era-title">${era.title}</div>
-      <div class="era-text">${era.text}</div>
-      ${era.quote ? `<div class="pull-quote">${era.quote}</div>` : ''}
-    </div>
-    <div class="divider">· · ·</div>
-  `).join('');
+      <div class="era-year">${e.year}</div>
+      <div class="era-title">${e.title}</div>
+      <div class="era-text">${e.text}</div>
+      ${e.quote?`<div class="pull-quote">${e.quote}</div>`:''}
+    </div><div class="divider">· · ·</div>`).join('');
 }
 
-// ── ABOUT ──
-const ABOUT = {
-  fr: {
-    heroSub: 'Le magazine qui a défini la modernité américaine',
-    fields: [
-      ['Fondation', '21 février 1925'],
-      ['Fondateur', 'Harold Ross'],
-      ['Siège', 'New York, USA'],
-      ['Fréquence', 'Hebdomadaire'],
-      ['Abonnés', '1,2 million+'],
-      ['Directeur actuel', 'David Remnick'],
-    ],
-    sections: [
-      {
-        title: 'Le magazine',
-        text: 'The New Yorker est bien plus qu\'un magazine new-yorkais. Depuis 1925, il est la référence mondiale du grand reportage, de la fiction littéraire, de la poésie contemporaine et du dessin d\'humour. Chaque semaine, ses pages accueillent les meilleures plumes du monde anglophone.'
-      },
-      {
-        title: 'Les couvertures',
-        text: 'Les couvertures du New Yorker sont des œuvres d\'art à part entière. Des artistes comme Saul Steinberg, Charles Addams, Art Spiegelman ou Barry Blitt y ont exprimé leur vision du monde. La plus célèbre reste « View of the World from 9th Avenue » de Saul Steinberg (1976), devenue une icône culturelle mondiale.'
-      },
-      {
-        title: 'Contributeurs célèbres',
-        text: 'Le magazine a publié les plus grandes signatures littéraires du XXe siècle :'
-      }
-    ],
-    contributors: ['J.D. Salinger', 'Joan Didion', 'John Updike', 'Truman Capote', 'Susan Sontag', 'Philip Roth', 'Malcolm Gladwell', 'John McPhee']
-  },
-  en: {
-    heroSub: 'The magazine that defined American modernity',
-    fields: [
-      ['Founded', 'February 21, 1925'],
-      ['Founder', 'Harold Ross'],
-      ['Headquarters', 'New York, USA'],
-      ['Frequency', 'Weekly'],
-      ['Subscribers', '1.2 million+'],
-      ['Current editor', 'David Remnick'],
-    ],
-    sections: [
-      {
-        title: 'The magazine',
-        text: 'The New Yorker is far more than a New York magazine. Since 1925, it has been the world\'s benchmark for long-form journalism, literary fiction, contemporary poetry, and cartoons. Each week, its pages host the finest writers of the English-speaking world.'
-      },
-      {
-        title: 'The covers',
-        text: 'New Yorker covers are works of art in their own right. Artists like Saul Steinberg, Charles Addams, Art Spiegelman, and Barry Blitt have expressed their world view through them. The most famous remains "View of the World from 9th Avenue" by Saul Steinberg (1976), now a global cultural icon.'
-      },
-      {
-        title: 'Famous contributors',
-        text: 'The magazine has published the greatest literary names of the 20th century:'
-      }
-    ],
-    contributors: ['J.D. Salinger', 'Joan Didion', 'John Updike', 'Truman Capote', 'Susan Sontag', 'Philip Roth', 'Malcolm Gladwell', 'John McPhee']
-  }
+const ABT = {
+  fr:{heroSub:'Le magazine qui a défini la modernité américaine',
+    fields:[['Fondation','21 février 1925'],['Fondateur','Harold Ross'],['Siège','New York, USA'],['Fréquence','Hebdomadaire'],['Abonnés','1,2 million+'],['Direction','David Remnick']],
+    s:[{t:'Le magazine',p:'Depuis 1925, the New Yorker est la référence mondiale du long-form journalism. Ses reportages, nouvelles, poèmes et cartoons réunissent chaque semaine les meilleures plumes du monde anglophone.'},{t:'Les couvertures',p:'Les couvertures sont des œuvres d\'art. Ilonka Karasz en a signé 186, Rea Irvin a créé l\'iconique Eustace Tilley, et des artistes comme Saul Steinberg, Barry Blitt ou Art Spiegelman ont marqué chaque époque.'},{t:'Contributeurs',p:'Le magazine a publié les plus grandes signatures du XXe siècle :'}],
+    c:['J.D. Salinger','Joan Didion','John Updike','Truman Capote','Philip Roth','Vladimir Nabokov','Alice Munro','Malcolm Gladwell']},
+  en:{heroSub:'The magazine that defined American modernity',
+    fields:[['Founded','February 21, 1925'],['Founder','Harold Ross'],['HQ','New York, USA'],['Frequency','Weekly'],['Subscribers','1.2 million+'],['Editor','David Remnick']],
+    s:[{t:'The magazine',p:'Since 1925, The New Yorker has been the world\'s benchmark for long-form journalism. Its reportage, fiction, poetry, and cartoons bring together the finest writers each week.'},{t:'The covers',p:'Covers are works of art. Ilonka Karasz signed 186, Rea Irvin created the iconic Eustace Tilley, and artists like Saul Steinberg, Barry Blitt, and Art Spiegelman left their mark on each era.'},{t:'Contributors',p:'The magazine published the greatest names of the 20th century:'}],
+    c:['J.D. Salinger','Joan Didion','John Updike','Truman Capote','Philip Roth','Vladimir Nabokov','Alice Munro','Malcolm Gladwell']}
 };
 
 function renderAbout() {
-  const content = document.getElementById('aboutContent');
-  const data = ABOUT[lang];
-  content.innerHTML = `
-    <div class="about-hero">
-      <div class="about-hero-title">The New Yorker</div>
-      <div class="about-hero-sub">${data.heroSub}</div>
-    </div>
-    ${data.fields.map(([l, v]) => `<div class="info-row"><div class="info-label">${l}</div><div class="info-value">${v}</div></div>`).join('')}
-    ${data.sections.map((s, i) => `
-      <div class="about-section-title">${s.title}</div>
-      <p class="about-text">${s.text}</p>
-      ${i === 2 ? `<div class="contributors-grid">${data.contributors.map(c => `<div class="contributor-chip">${c}</div>`).join('')}</div>` : ''}
-    `).join('')}
-  `;
+  const d = ABT[lang];
+  document.getElementById('aboutContent').innerHTML = `
+    <div class="about-hero"><div class="about-hero-title">The New Yorker</div><div class="about-hero-sub">${d.heroSub}</div></div>
+    ${d.fields.map(([l,v])=>`<div class="info-row"><div class="info-label">${l}</div><div class="info-value">${v}</div></div>`).join('')}
+    ${d.s.map((s,i)=>`<div class="about-section-title">${s.t}</div><p class="about-text">${s.p}</p>${i===2?`<div class="contributors-grid">${d.c.map(c=>`<div class="contributor-chip">${c}</div>`).join('')}</div>`:''}`).join('')}`;
 }
 
-// ── TABS ──
 function switchTab(tab) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('panel-' + tab).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'history') renderHistory();
-  if (tab === 'about') renderAbout();
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  if (tab==='history') renderHistory();
+  if (tab==='about') renderAbout();
+  if (tab==='quiz') initQuiz();
 }
 
-// ── LANGUAGE ──
 function toggleLang() {
-  lang = lang === 'fr' ? 'en' : 'fr';
-  applyLang();
+  lang = lang==='fr'?'en':'fr';
+  document.getElementById('flagIcon').textContent = lang==='fr'?'🇬🇧':'🇫🇷';
+  document.getElementById('langLabel').textContent = lang==='fr'?'EN':'FR';
+  document.querySelectorAll('.tab-label').forEach(el=>{ el.textContent=el.dataset[lang]; });
+  document.getElementById('coversTitle').textContent = lang==='fr'?'Couvertures emblématiques':'Iconic Covers';
+  document.getElementById('coversDesc').textContent = lang==='fr'?'Couvertures libres de droits de Wikimedia Commons, groupées par artiste':'Public domain covers from Wikimedia Commons, grouped by artist';
+  if (allGroups.length) renderCovers();
+  const a = document.querySelector('.tab-panel.active')?.id.replace('panel-','');
+  if (a==='history') renderHistory();
+  if (a==='about') renderAbout();
+  if (a==='quiz') initQuiz();
 }
 
-function applyLang() {
-  // Flag & label
-  document.getElementById('flagIcon').textContent = lang === 'fr' ? '🇬🇧' : '🇫🇷';
-  document.getElementById('langLabel').textContent = lang === 'fr' ? 'EN' : 'FR';
-  document.getElementById('headerSubtitle').textContent = lang === 'fr' ? 'Magazine · est. 1925' : 'Magazine · est. 1925';
+// ── QUIZ ──
+const QUIZ_Q = [
+  { fr:'En quelle année The New Yorker a-t-il été fondé ?', en:'In what year was The New Yorker founded?',
+    choices:{fr:['1918','1920','1925','1930'],en:['1918','1920','1925','1930']}, answer:2,
+    explain:{fr:'The New Yorker paraît pour la première fois le 21 février 1925.',en:'The New Yorker first appeared on February 21, 1925.'} },
+  { fr:'Qui a fondé The New Yorker ?', en:'Who founded The New Yorker?',
+    choices:{fr:['William Shawn','Harold Ross','Tina Brown','David Remnick'],en:['William Shawn','Harold Ross','Tina Brown','David Remnick']}, answer:1,
+    explain:{fr:'Harold Ross, avec sa femme Jane Grant, a fondé le magazine en 1925.',en:'Harold Ross, along with his wife Jane Grant, founded the magazine in 1925.'} },
+  { fr:'Quel personnage emblématique orne la première couverture du magazine ?', en:'Which iconic character appeared on the very first cover?',
+    choices:{fr:['Uncle Sam','Eustace Tilley','The New Yorker Man','The Dandy'],en:['Uncle Sam','Eustace Tilley','The New Yorker Man','The Dandy']}, answer:1,
+    explain:{fr:'Eustace Tilley, dandy à monocle dessiné par Rea Irvin, est le symbole intemporel du magazine.',en:'Eustace Tilley, a monocled dandy drawn by Rea Irvin, is the magazine\'s timeless symbol.'} },
+  { fr:'Quelle artiste a signé le plus grand nombre de couvertures du New Yorker ?', en:'Which artist created the most New Yorker covers?',
+    choices:{fr:['Rea Irvin','Charles Addams','Saul Steinberg','Ilonka Karasz'],en:['Rea Irvin','Charles Addams','Saul Steinberg','Ilonka Karasz']}, answer:3,
+    explain:{fr:'Ilonka Karasz a créé 186 couvertures entre 1925 et 1973 — un record absolu.',en:'Ilonka Karasz created 186 covers between 1925 and 1973 — an absolute record.'} },
+  { fr:'En quelle année John Hersey a-t-il publié "Hiroshima" dans le New Yorker ?', en:'In what year did John Hersey publish "Hiroshima" in The New Yorker?',
+    choices:{fr:['1944','1945','1946','1948'],en:['1944','1945','1946','1948']}, answer:2,
+    explain:{fr:'Le numéro du 31 août 1946 est entièrement consacré au reportage "Hiroshima" de John Hersey.',en:'The August 31, 1946 issue was entirely devoted to John Hersey\'s "Hiroshima" reportage.'} },
+  { fr:'Combien de couvertures Ilonka Karasz a-t-elle créées pour le magazine ?', en:'How many covers did Ilonka Karasz create for the magazine?',
+    choices:{fr:['45','102','186','312'],en:['45','102','186','312']}, answer:2,
+    explain:{fr:'Karasz a signé 186 couvertures, de 1925 à 1973 — la plus longue collaboration de l\'histoire du New Yorker.',en:'Karasz signed 186 covers, from 1925 to 1973 — the longest collaboration in New Yorker history.'} },
+  { fr:'Qui a succédé à Harold Ross à la direction du magazine en 1951 ?', en:'Who succeeded Harold Ross as editor in 1951?',
+    choices:{fr:['Tina Brown','Robert Gottlieb','William Shawn','David Remnick'],en:['Tina Brown','Robert Gottlieb','William Shawn','David Remnick']}, answer:2,
+    explain:{fr:'William Shawn a dirigé le New Yorker de 1951 à 1987, soit 35 ans.',en:'William Shawn led The New Yorker from 1951 to 1987 — 35 years.'} },
+  { fr:'De quelle origine était l\'illustratrice Ilonka Karasz ?', en:'What was illustrator Ilonka Karasz\'s origin?',
+    choices:{fr:['Française','Polonaise','Hongroise','Autrichienne'],en:['French','Polish','Hungarian','Austrian']}, answer:2,
+    explain:{fr:'Née à Budapest en 1896, Ilonka Karasz a émigré aux États-Unis en 1913.',en:'Born in Budapest in 1896, Ilonka Karasz emigrated to the United States in 1913.'} },
+  { fr:'Quel auteur a publié la nouvelle "La Loterie" dans le New Yorker en 1948 ?', en:'Which author published the short story "The Lottery" in The New Yorker in 1948?',
+    choices:{fr:['Truman Capote','J.D. Salinger','Shirley Jackson','E.B. White'],en:['Truman Capote','J.D. Salinger','Shirley Jackson','E.B. White']}, answer:2,
+    explain:{fr:'"La Loterie" de Shirley Jackson (1948) a généré plus de courrier que toute autre nouvelle dans l\'histoire du magazine.',en:'"The Lottery" by Shirley Jackson (1948) generated more reader mail than any other story in the magazine\'s history.'} },
+  { fr:'Quel est le prix du tout premier numéro du New Yorker en 1925 ?', en:'What was the price of the very first issue of The New Yorker in 1925?',
+    choices:{fr:['5 cents','10 cents','15 cents','25 cents'],en:['5 cents','10 cents','15 cents','25 cents']}, answer:2,
+    explain:{fr:'Le premier numéro du 21 février 1925 était vendu 15 cents.',en:'The first issue of February 21, 1925 was sold for 15 cents.'} },
+  { fr:'En quelle année Tina Brown a-t-elle pris la direction du New Yorker ?', en:'In what year did Tina Brown take over as editor?',
+    choices:{fr:['1988','1990','1992','1995'],en:['1988','1990','1992','1995']}, answer:2,
+    explain:{fr:'Tina Brown a pris la direction du New Yorker en 1992 et y a introduit couleurs, photos et célébrités.',en:'Tina Brown took over The New Yorker in 1992, introducing color, photography, and celebrity profiles.'} },
+  { fr:'L\'œuvre de quel auteur, publiée dans le New Yorker, a donné naissance au terme "Nouveau Journalisme" ?', en:'Which New Yorker author is closely associated with pioneering long-form creative nonfiction?',
+    choices:{fr:['Tom Wolfe','Truman Capote','Hunter Thompson','Gay Talese'],en:['Tom Wolfe','Truman Capote','Hunter Thompson','Gay Talese']}, answer:1,
+    explain:{fr:'"De sang-froid" de Truman Capote, publié d\'abord dans le New Yorker en 1965, a révolutionné le journalisme narratif.',en:'"In Cold Blood" by Truman Capote, first serialized in The New Yorker in 1965, revolutionized narrative journalism.'} },
+  { fr:'Quelle couverture de Saul Steinberg (1976) est devenue une icône mondiale ?', en:'Which Saul Steinberg cover (1976) became a global cultural icon?',
+    choices:{fr:['Manhattan at Night','View from 9th Avenue','Central Park in Spring','The Brooklyn Bridge'],en:['Manhattan at Night','View from 9th Avenue','Central Park in Spring','The Brooklyn Bridge']}, answer:1,
+    explain:{fr:'"View of the World from 9th Avenue" de Saul Steinberg (1976) est l\'une des couvertures de magazine les plus reproduites au monde.',en:'"View of the World from 9th Avenue" by Saul Steinberg (1976) is one of the most reproduced magazine covers in the world.'} },
+  { fr:'Combien d\'abonnés environ The New Yorker compte-t-il aujourd\'hui ?', en:'Approximately how many subscribers does The New Yorker have today?',
+    choices:{fr:['200 000','500 000','1,2 million','3 millions'],en:['200,000','500,000','1.2 million','3 million']}, answer:2,
+    explain:{fr:'The New Yorker dépasse aujourd\'hui 1,2 million d\'abonnés imprimés et numériques.',en:'The New Yorker today exceeds 1.2 million print and digital subscribers.'} },
+  { fr:'Qui est l\'actuel directeur du New Yorker ?', en:'Who is the current editor of The New Yorker?',
+    choices:{fr:['Anna Wintour','Condé Nast','Roger Angell','David Remnick'],en:['Anna Wintour','Condé Nast','Roger Angell','David Remnick']}, answer:3,
+    explain:{fr:'David Remnick dirige le New Yorker depuis 1998. Ancien journaliste au Washington Post, il a remporté le prix Pulitzer.',en:'David Remnick has led The New Yorker since 1998. A former Washington Post journalist, he is a Pulitzer Prize winner.'} }
+];
 
-  // Tabs
-  document.querySelectorAll('.tab-label').forEach(el => {
-    el.textContent = el.dataset[lang];
-  });
+let qState = { idx:0, score:0, answered:false, questions:[] };
 
-  // Section headers
-  document.getElementById('coversTitle').textContent = lang === 'fr' ? 'Couvertures emblématiques' : 'Iconic Covers';
-  document.getElementById('coversDesc').textContent = lang === 'fr'
-    ? 'Couvertures libres de droits issues de Wikimedia Commons (1925–1927)'
-    : 'Public domain covers from Wikimedia Commons (1925–1927)';
-
-  // Re-render active panels
-  if (covers.length > 0) renderCovers();
-  const activeTab = document.querySelector('.tab-panel.active')?.id.replace('panel-', '');
-  if (activeTab === 'history') renderHistory();
-  if (activeTab === 'about') renderAbout();
+function shuffleQuestions() {
+  const q = [...QUIZ_Q];
+  for (let i=q.length-1;i>0;i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [q[i],q[j]] = [q[j],q[i]];
+  }
+  return q.slice(0, 10); // 10 questions per game
 }
 
-// ── INIT ──
+function initQuiz() {
+  qState = { idx:0, score:0, answered:false, questions: shuffleQuestions() };
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const box = document.getElementById('quizContainer');
+  const total = qState.questions.length;
+  const i = qState.idx;
+  if (i >= total) { renderResults(); return; }
+
+  const q = qState.questions[i];
+  const pct = Math.round((i/total)*100);
+  const choices = q.choices[lang];
+  const LETTERS = ['A','B','C','D'];
+
+  box.innerHTML = `
+    <div class="quiz-wrap">
+      <div class="quiz-progress-bar"><div class="quiz-progress-fill" style="width:${pct}%"></div></div>
+      <div class="quiz-meta">
+        <div class="quiz-counter">${lang==='fr'?'Question':'Question'} ${i+1} / ${total}</div>
+        <div class="quiz-score-badge">${lang==='fr'?'Score':'Score'} : ${qState.score}</div>
+      </div>
+      <div class="quiz-body">
+        <div class="quiz-question">${lang==='fr'?q.fr:q.en}</div>
+        <div class="quiz-choices">
+          ${choices.map((c,ci)=>`
+            <button class="choice-btn" id="choice-${ci}" onclick="pickAnswer(${ci})">
+              <span class="choice-letter">${LETTERS[ci]}</span>${c}
+            </button>`).join('')}
+        </div>
+        <div class="quiz-feedback" id="qfeedback"></div>
+        <button class="quiz-next-btn" id="qnext" onclick="nextQuestion()">
+          ${i+1<total ? (lang==='fr'?'Question suivante →':'Next question →') : (lang==='fr'?'Voir les résultats →':'See results →')}
+        </button>
+      </div>
+    </div>`;
+}
+
+function pickAnswer(ci) {
+  if (qState.answered) return;
+  qState.answered = true;
+  const q = qState.questions[qState.idx];
+  const correct = q.answer;
+  const isRight = ci === correct;
+  if (isRight) qState.score++;
+
+  // Style buttons
+  for (let i=0;i<4;i++) {
+    const btn = document.getElementById('choice-'+i);
+    if (!btn) continue;
+    btn.disabled = true;
+    if (i===ci && isRight) btn.classList.add('correct');
+    else if (i===ci && !isRight) btn.classList.add('wrong');
+    else if (i===correct) btn.classList.add('reveal-correct');
+  }
+
+  // Feedback
+  const fb = document.getElementById('qfeedback');
+  fb.className = 'quiz-feedback show ' + (isRight?'ok':'ko');
+  fb.textContent = (isRight
+    ? (lang==='fr'?'✓ Correct ! ':'✓ Correct! ')
+    : (lang==='fr'?'✗ Incorrect. ':'✗ Incorrect. '))
+    + (lang==='fr'?q.explain.fr:q.explain.en);
+
+  // Show next button
+  document.getElementById('qnext').classList.add('show');
+
+  // Update score badge
+  document.querySelector('.quiz-score-badge').textContent = (lang==='fr'?'Score':'Score')+' : '+qState.score;
+}
+
+function nextQuestion() {
+  qState.idx++;
+  qState.answered = false;
+  renderQuestion();
+}
+
+function renderResults() {
+  const box = document.getElementById('quizContainer');
+  const s = qState.score;
+  const t = qState.questions.length;
+  const pct = Math.round((s/t)*100);
+  let medal, title_fr, title_en, msg_fr, msg_en;
+
+  if (pct>=90)      { medal='🏆'; title_fr='Excellent !'; title_en='Outstanding!'; msg_fr='Vous êtes un véritable expert du New Yorker. Chapeau !'; msg_en='You are a true New Yorker expert. Bravo!' }
+  else if (pct>=70) { medal='🎖'; title_fr='Très bien !'; title_en='Very good!'; msg_fr='Belle connaissance du magazine. Quelques détails vous ont échappé…'; msg_en='Great knowledge of the magazine. A few details slipped by…' }
+  else if (pct>=50) { medal='📰'; title_fr='Pas mal !'; title_en='Not bad!'; msg_fr='Vous connaissez les grandes lignes. Retournez lire l\'onglet Histoire !'; msg_en='You know the basics. Head back to the History tab to learn more!' }
+  else              { medal='🖊'; title_fr='À revoir…'; title_en='Room to improve…'; msg_fr='Le New Yorker n\'a pas encore livré tous ses secrets. Essayez encore !'; msg_en='The New Yorker hasn\'t revealed all its secrets yet. Try again!' }
+
+  box.innerHTML = `
+    <div class="quiz-results">
+      <div class="results-medal">${medal}</div>
+      <div class="results-title">${lang==='fr'?title_fr:title_en}</div>
+      <div class="results-score">${s}/${t}</div>
+      <div class="results-total">${lang==='fr'?`${pct}% de bonnes réponses`:`${pct}% correct`}</div>
+      <div class="results-msg">${lang==='fr'?msg_fr:msg_en}</div>
+      <button class="replay-btn" onclick="initQuiz()">${lang==='fr'?'Rejouer':'Play again'}</button>
+    </div>`;
+}
+
 loadCovers();
 </script>
 </body>
