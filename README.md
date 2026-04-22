@@ -1,5 +1,10 @@
 # Iconic Covers
 
+# 2.0
+- Completely redesigned
+- New Quiz
+- Page My Others Apps
+
 For any questions or issues, please contact: michel.garlandat@icloud.com
 
 How to play
