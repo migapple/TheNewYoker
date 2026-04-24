@@ -1,5 +1,8 @@
 # Iconic Covers
 
+# 2.1
+- Pictures downloaded changed
+- 
 # 2.0
 - Completely redesigned
 - New Quiz
