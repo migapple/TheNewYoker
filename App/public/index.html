@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Iconic Covers</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -346,9 +346,36 @@ function artistFromCat(c) {
   return c.replace(/'s?\s+New Yorker covers?/i,'').replace(/\s+New Yorker.*/i,'').trim();
 }
 
+const CACHE_KEY = 'iconic_covers_v2';
+const CACHE_TTL = 7 * 24 * 60 * 60 * 1000; // 7 jours
+
 async function loadCovers() {
   const box = document.getElementById('coversContainer');
+
+  // ── Essai cache d'abord ──
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (raw) {
+      const cached = JSON.parse(raw);
+      if (Date.now() - cached.ts < CACHE_TTL) {
+        allGroups = cached.groups;
+        flatCovers = allGroups.flatMap(g => g.covers.map(c=>({...c, artist:g.artist})));
+        renderCovers();
+        // Rafraîchissement silencieux en arrière-plan si > 1 jour
+        if (Date.now() - cached.ts > 24 * 60 * 60 * 1000) {
+          fetchAndCache(null); // pas d'indicateur de chargement
+        }
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // ── Pas de cache → chargement normal avec indicateur ──
   setLoading(box, lang==='fr'?'Chargement…':'Loading…', lang==='fr'?'Interrogation de Wikimedia Commons':'Querying Wikimedia Commons');
+  await fetchAndCache(box);
+}
+
+async function fetchAndCache(box) {
   try {
     const subcats = await getSubcats('The_New_Yorker_covers');
     const mainFiles = await getFiles('The_New_Yorker_covers');
@@ -365,14 +392,16 @@ async function loadCovers() {
     const other = mainFiles.filter(f => !grouped.has(f));
     if (other.length) groups.push({artist: lang==='fr'?'Artistes divers':'Various Artists', files: other});
 
-    if (!groups.length) { showErr(box); return; }
+    if (!groups.length) { if (box) showErr(box); return; }
 
-    const total = groups.reduce((n,g)=>n+g.files.length,0);
-    setLoading(box, lang==='fr'?'Chargement des images…':'Loading images…', `${total} ${lang==='fr'?'illustrations trouvées':'illustrations found'}`);
+    if (box) {
+      const total = groups.reduce((n,g)=>n+g.files.length,0);
+      setLoading(box, lang==='fr'?'Chargement des images…':'Loading images…', `${total} ${lang==='fr'?'illustrations trouvées':'illustrations found'}`);
+    }
 
     const thumbMap = await getThumbs(groups.flatMap(g=>g.files));
 
-    allGroups = groups.map(g => ({
+    const newGroups = groups.map(g => ({
       artist: g.artist,
       covers: g.files.filter(f=>thumbMap[f]).map(f=>({
         file:f, en:parseDate(f), fr:toFr(parseDate(f)),
@@ -380,9 +409,31 @@ async function loadCovers() {
       }))
     })).filter(g=>g.covers.length);
 
+    // Sauvegarde dans localStorage
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), groups: newGroups }));
+    } catch(e) {}
+
+    allGroups = newGroups;
     flatCovers = allGroups.flatMap(g => g.covers.map(c=>({...c, artist:g.artist})));
     renderCovers();
-  } catch(e) { console.error(e); showErr(box); }
+  } catch(e) {
+    console.error(e);
+    if (box) {
+      // Si le cache existe (même périmé), l'utiliser en dernier recours
+      try {
+        const raw = localStorage.getItem(CACHE_KEY);
+        if (raw) {
+          const cached = JSON.parse(raw);
+          allGroups = cached.groups;
+          flatCovers = allGroups.flatMap(g => g.covers.map(c=>({...c, artist:g.artist})));
+          renderCovers();
+          return;
+        }
+      } catch(e2) {}
+      showErr(box);
+    }
+  }
 }
 
 function setLoading(el, msg, sub) {
@@ -396,6 +447,10 @@ function renderCovers() {
   const box = document.getElementById('coversContainer');
   if (!allGroups.length) { showErr(box); return; }
   box.innerHTML = '';
+
+  // Build DOM first (all cards with placeholders, no src yet)
+  const imgQueue = []; // [{el, src, retries}]
+
   for (const g of allGroups) {
     const n = g.covers.length;
     const cnt = lang==='fr'?`${n} illustration${n>1?'s':''}`:`${n} illustration${n>1?'s':''}`;
@@ -410,19 +465,75 @@ function renderCovers() {
       const card = document.createElement('div');
       card.className = 'cover-card';
       card.onclick = ()=>openModal(idx);
-      card.innerHTML = `<div class="cover-img-wrap"><div class="loader" id="l${idx}"></div><img src="${c.thumb}" alt="${date}" loading="lazy" onload="document.getElementById('l${idx}').style.display='none'" onerror="document.getElementById('l${idx}').style.display='none';this.style.display='none'"></div><div class="cover-caption"><div class="cover-date">${date}</div></div>`;
+      // img without src yet — will be set by loadQueue
+      card.innerHTML = `<div class="cover-img-wrap"><div class="loader" id="l${idx}"></div><img id="img${idx}" alt="${date}"></div><div class="cover-caption"><div class="cover-date">${date}</div></div>`;
       grid.appendChild(card);
+      imgQueue.push({ id: idx, src: c.thumb, retries: 0 });
     });
     el.appendChild(grid);
     box.appendChild(el);
   }
+
+  // Load in batches of 4, 300ms apart, up to 3 retries per image
+  loadImageQueue(imgQueue, 0, 4, 300);
 }
+
+function loadImageQueue(queue, offset, batchSize, delay) {
+  if (offset >= queue.length) return;
+  const batch = queue.slice(offset, offset + batchSize);
+  batch.forEach(item => loadOneImage(item, queue, batchSize, delay));
+  setTimeout(() => loadImageQueue(queue, offset + batchSize, batchSize, delay), delay);
+}
+
+function loadOneImage(item, queue, batchSize, delay) {
+  const img = document.getElementById('img' + item.id);
+  const loader = document.getElementById('l' + item.id);
+  if (!img) return;
+
+  const timeout = setTimeout(() => {
+    // Timeout after 8s → retry
+    if (item.retries < 3) {
+      item.retries++;
+      setTimeout(() => loadOneImage(item, queue, batchSize, delay), 1000 * item.retries);
+    } else {
+      if (loader) loader.style.display = 'none';
+      img.style.display = 'none';
+    }
+  }, 8000);
+
+  img.onload = () => {
+    clearTimeout(timeout);
+    if (loader) loader.style.display = 'none';
+    img.style.opacity = '0';
+    img.style.transition = 'opacity 0.3s';
+    requestAnimationFrame(() => { img.style.opacity = '1'; });
+  };
+  img.onerror = () => {
+    clearTimeout(timeout);
+    if (item.retries < 3) {
+      item.retries++;
+      img.removeAttribute('src');
+      setTimeout(() => { img.src = item.src + (item.src.includes('?') ? '&' : '?') + 't=' + Date.now(); }, 800 * item.retries);
+    } else {
+      if (loader) loader.style.display = 'none';
+      img.style.display = 'none';
+    }
+  };
+  img.src = item.src;
+}
+
 
 // ── MODAL ──
 function openModal(idx) {
   const c = flatCovers[idx];
   if (!c) return;
-  document.getElementById('modalImg').src = c.thumb;
+  const mImg = document.getElementById('modalImg');
+  mImg.style.opacity = '0';
+  mImg.onload = () => { mImg.style.transition='opacity 0.3s'; mImg.style.opacity='1'; };
+  mImg.onerror = () => {
+    setTimeout(() => { mImg.src = c.thumb + '?t=' + Date.now(); }, 1000);
+  };
+  mImg.src = c.thumb;
   document.getElementById('modalTitle').textContent = lang==='fr'?c.fr:c.en;
   document.getElementById('modalArtist').textContent = c.artist;
   document.getElementById('modalDesc').textContent = artistDesc(c.artist);
